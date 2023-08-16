@@ -5,3 +5,21 @@
 * {
   @apply text-white;
 }
+
+.cool-text {
+  text-shadow: -1px 1px 2px #00ffff, -2px 2px 2px #ff00ff, 2px -2px 2px #ffff00;
+}
+
+table {
+  td {
+    @apply p-1;
+  }
+}
+
+td {
+  @apply p-1;
+}
+
+tr {
+  @apply divide-x divide-black;
+}
