@@ -11,11 +11,15 @@
 }
 
 .glow {
-  box-shadow: 0 0 50px 15px #48abe0;
+  box-shadow: 0 0 50px 10px rgba(125, 252, 178, 0.5);
 }
 
 td {
-  @apply p-1;
+  @apply mx-2 p-4 text-left;
+}
+
+th {
+  @apply mx-2 p-4 text-left;
 }
 
 tr {

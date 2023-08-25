@@ -110,14 +110,14 @@ export default function Home() {
 
           <h2 className="mb-2 mt-4 text-2xl">Upcoming gigs</h2>
           <table
-            className="mx-2 table w-full bg-[#7DFCB2]/20 md:text-2xl"
+            className="glow mx-2 my-6 table rounded-md bg-[#7DFCB2]/20 md:text-2xl"
             ref={gigsRef}
           >
             <thead className="border-b border-black">
               <tr className="divide-x divide-black">
-                <th className="p-1 text-left">Venue</th>
-                <th className="p-1 text-left">Date</th>
-                <th className="p-1 text-left">Tix</th>
+                <th>Venue</th>
+                <th>Date</th>
+                <th>Tix</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black">
