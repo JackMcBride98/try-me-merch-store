@@ -1,3 +1,4 @@
+import { SocialLink } from "@/components/socialLink";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Head from "next/head";
@@ -86,19 +87,19 @@ export default function Home() {
           <Image
             src="/trumpet.jpg"
             alt="picture of try me"
-            width={540}
-            height={540}
+            width={420}
+            height={420}
             className="object-contain"
           />
-          <p className="cool-text cool-shadow text-md w-full bg-white/10 bg-gradient-to-b from-black/20 via-white/20 to-black/20 py-6  text-center font-bold text-transparent text-white xxs:text-lg xs:text-xl  md:text-4xl">
+          <p className="cool-text text-md text-md w-full rounded-lg bg-white/10 bg-gradient-to-b from-black/20 via-white/20 to-black/20 py-6 text-center font-bold text-transparent text-white xxs:text-lg xs:text-xl sm:w-auto sm:px-4  md:my-4 md:text-4xl">
             Bristol based duo with a jig in our step.
           </p>
           <div className="relative flex flex-col items-center">
             <Image
               src="/boombox.jpg"
               alt="try me on steps in funky trousers"
-              width={850}
-              height={1035}
+              width={425}
+              height={517}
             />
             <div className="absolute bottom-8 flex  flex-col rounded-full bg-white/10 bg-gradient-to-b from-black/40 via-black/80 to-black/40 p-4 text-center uppercase drop-shadow-xl xxs:text-lg xs:text-xl md:bottom-16 md:text-4xl">
               <p className="cool-text">
@@ -145,40 +146,33 @@ export default function Home() {
               width={3439}
               height={5159}
             />
-            <div className="absolute top-0 flex h-full w-full items-center justify-center space-x-4 xs:space-x-8">
-              <a className="opacity-90 xs:scale-125" href="">
-                <Image
-                  src="/facebook-logo.webp"
-                  width={48}
-                  height={48}
-                  alt="facebook logo"
-                />
-              </a>
-              <a className="opacity-90 xs:scale-125" href="">
-                <Image
-                  src="/instagram-logo.webp"
-                  width={48}
-                  height={48}
-                  alt="instagram logo"
-                />
-              </a>
-              <a className="opacity-90 invert xs:scale-125" href="">
-                <Image
-                  src="/tik-tok.png"
-                  width={48}
-                  height={48}
-                  alt="tik tok logo"
-                  className="bg-transparent"
-                />
-              </a>
-              <a className="opacity-90 xs:scale-125" href="">
-                <Image
-                  src="/email-logo.png"
-                  width={48}
-                  height={48}
-                  alt="email logo"
-                />
-              </a>
+            <div className="absolute top-0 flex h-full w-full items-center justify-center space-x-4 sm:space-x-8">
+              <SocialLink
+                link="https://www.facebook.com/trymewav/"
+                imageUrl="/facebook-logo.webp"
+                alt="facebook logo"
+              />
+              <SocialLink
+                link="https://www.instagram.com/trymewav/"
+                imageUrl="/instagram-logo.webp"
+                alt="instagram logo"
+              />
+              <SocialLink
+                link="https://www.tiktok.com/@trymewav"
+                imageUrl="/tik-tok.png"
+                alt="tik tok logo"
+                className="invert"
+              />
+              <SocialLink
+                link="https://www.youtube.com/channel/UC9JCSPyLfx51eaIp43XRAsg"
+                imageUrl="/youtube.png"
+                alt="youtube logo"
+              />
+              <SocialLink
+                link="mailto:management@jonathansavage.co.uk"
+                imageUrl="/email-logo.png"
+                alt="email logo"
+              />
             </div>
           </div>
         </main>
