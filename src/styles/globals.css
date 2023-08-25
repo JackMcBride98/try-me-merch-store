@@ -25,3 +25,21 @@ th {
 tr {
   @apply divide-x divide-black;
 }
+
+.bg-animate {
+  background: linear-gradient(0deg, #7dfcb2, #000000);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 40% 0%;
+  }
+  50% {
+    background-position: 100% 20%;
+  }
+  100% {
+    background-position: 40% 0%;
+  }
+}
