@@ -4,7 +4,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { formSchema } from "@/pages/admin";
+import { newGigFormSchema } from "@/components/newGigForm";
 
 export const gigsRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -12,7 +12,7 @@ export const gigsRouter = createTRPCRouter({
   }),
 
   create: protectedProcedure
-    .input(formSchema)
+    .input(newGigFormSchema)
     .mutation(async ({ ctx, input }) => {
       const newGig = await ctx.prisma.gigs.create({
         data: {
