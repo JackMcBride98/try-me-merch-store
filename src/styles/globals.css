@@ -6,6 +6,19 @@
   @apply text-white;
 }
 
+.distort {
+  backdrop-filter: url("#turbulence");
+}
+
+input {
+  @apply text-black;
+}
+
+body,
+html {
+  @apply bg-black;
+}
+
 .cool-text {
   text-shadow: -1px 1px 2px #00ffff, -2px 2px 2px #ff00ff, 2px -2px 2px #ffff00;
 }

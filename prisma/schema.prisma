@@ -61,3 +61,10 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Gigs {
+    id   String   @id @default(cuid())
+    name String
+    link String
+    date DateTime
+}
