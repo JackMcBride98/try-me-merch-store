@@ -14,7 +14,7 @@ export const gigsRouter = createTRPCRouter({
   create: protectedProcedure
     .input(formSchema)
     .mutation(async ({ ctx, input }) => {
-      const returnThis = await ctx.prisma.gigs.create({
+      const newGig = await ctx.prisma.gigs.create({
         data: {
           ...input,
           date: new Date(input.date),
@@ -22,17 +22,17 @@ export const gigsRouter = createTRPCRouter({
       });
 
       await ctx.res.revalidate("/");
-      return returnThis;
+      return newGig;
     }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const returnThis = await ctx.prisma.gigs.delete({
+      const deletedGig = await ctx.prisma.gigs.delete({
         where: { id: input.id },
       });
 
       await ctx.res.revalidate("/");
-      return returnThis;
+      return deletedGig;
     }),
 });
