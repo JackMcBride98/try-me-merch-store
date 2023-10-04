@@ -5,9 +5,11 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { formSchema } from "@/pages/admin";
+import { revalidatePath } from "next/cache";
 
 export const gigsRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
+    revalidatePath("/");
     return ctx.prisma.gigs.findMany();
   }),
 

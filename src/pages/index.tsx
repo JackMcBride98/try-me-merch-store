@@ -1,4 +1,6 @@
 import { SocialLink } from "@/components/socialLink";
+import { prisma } from "@/server/db";
+import { type Gigs } from "@prisma/client";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Head from "next/head";
@@ -6,7 +8,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 
-export default function Home() {
+type HomeProps = {
+  gigs: Array<Gigs>;
+};
+
+export default function Home({ gigs }: HomeProps) {
   const gigsRef = useRef<HTMLTableElement>(null);
 
   return (
@@ -17,18 +23,6 @@ export default function Home() {
         <link rel="icon" href="/logo.png" />
       </Head>
 
-      <svg className="hidden">
-        <defs>
-          <filter id="turbulence" x="0" y="0" width="100%" height="100%">
-            <feTurbulence
-              id="sea-filter"
-              numOctaves="3"
-              seed="2"
-              baseFrequency="0.01 0.04"
-            />
-          </filter>
-        </defs>
-      </svg>
       <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center">
         <header className="fixed z-50 flex w-full bg-[#7DFCB2]/20 text-white">
           <div className="flex w-full items-center justify-between">
@@ -124,21 +118,21 @@ export default function Home() {
               </tr>
             </thead>
             <tbody className="divide-y divide-black">
-              <tr>
-                <td>Exchange</td>
-                <td>04/09/2023</td>
-                <td> Link </td>
-              </tr>
-              <tr>
-                <td>Mr Wolfs</td>
-                <td>9/11/2023</td>
-                <td> Link </td>
-              </tr>
-              <tr>
-                <td>Glastonbury</td>
-                <td>8/08/2030</td>
-                <td> Link </td>
-              </tr>
+              {gigs.length > 0 ? (
+                gigs.map((gig) => (
+                  <tr key={gig.id} className="divide-x divide-black">
+                    <td>{gig.name}</td>
+                    <td>{gig.date.toLocaleDateString()}</td>
+                    <td>
+                      <a href={gig.link}>Link</a>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>No gigs yet</td>
+                </tr>
+              )}
             </tbody>
           </table>
           <div className="relative w-full">
@@ -181,4 +175,13 @@ export default function Home() {
       </div>
     </>
   );
+}
+
+export async function getStaticProps() {
+  const gigs = await prisma.gigs.findMany();
+  return {
+    props: {
+      gigs,
+    },
+  };
 }

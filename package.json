@@ -23,10 +23,11 @@
     "@trpc/server": "^10.34.0",
     "next": "^13.4.2",
     "next-auth": "^4.22.4",
+    "next-superjson": "^0.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.47.0",
-    "superjson": "^1.13.1",
+    "superjson": "^1.13.3",
     "zod": "^3.21.4"
   },
   "devDependencies": {
