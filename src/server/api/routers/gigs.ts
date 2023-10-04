@@ -12,17 +12,23 @@ export const gigsRouter = createTRPCRouter({
   }),
 
   create: protectedProcedure.input(formSchema).mutation(({ ctx, input }) => {
-    return ctx.prisma.gigs.create({
+    const returnThis = ctx.prisma.gigs.create({
       data: {
         ...input,
         date: new Date(input.date),
       },
     });
+
+    void ctx.res.revalidate("/");
+    return returnThis;
   }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.gigs.delete({ where: { id: input.id } });
+      const returnThis = ctx.prisma.gigs.delete({ where: { id: input.id } });
+
+      void ctx.res.revalidate("/");
+      return returnThis;
     }),
 });
