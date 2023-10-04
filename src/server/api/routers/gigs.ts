@@ -21,6 +21,7 @@ export const gigsRouter = createTRPCRouter({
         },
       });
 
+      console.log("revalidating /");
       await ctx.res.revalidate("/");
       return returnThis;
     }),
@@ -30,6 +31,7 @@ export const gigsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const returnThis = ctx.prisma.gigs.delete({ where: { id: input.id } });
 
+      console.log("revalidating /");
       await ctx.res.revalidate("/");
       return returnThis;
     }),
