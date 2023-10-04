@@ -11,24 +11,26 @@ export const gigsRouter = createTRPCRouter({
     return ctx.prisma.gigs.findMany();
   }),
 
-  create: protectedProcedure.input(formSchema).mutation(({ ctx, input }) => {
-    const returnThis = ctx.prisma.gigs.create({
-      data: {
-        ...input,
-        date: new Date(input.date),
-      },
-    });
+  create: protectedProcedure
+    .input(formSchema)
+    .mutation(async ({ ctx, input }) => {
+      const returnThis = ctx.prisma.gigs.create({
+        data: {
+          ...input,
+          date: new Date(input.date),
+        },
+      });
 
-    void ctx.res.revalidate("/");
-    return returnThis;
-  }),
+      await ctx.res.revalidate("/");
+      return returnThis;
+    }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const returnThis = ctx.prisma.gigs.delete({ where: { id: input.id } });
 
-      void ctx.res.revalidate("/");
+      await ctx.res.revalidate("/");
       return returnThis;
     }),
 });

@@ -31,7 +31,7 @@ export default function Admin() {
   } = useForm<FormFields>({ resolver: zodResolver(formSchema) });
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
+    console.log("we revalidting out here");
     await newGig.mutateAsync(data);
     await gigs.refetch();
   });
