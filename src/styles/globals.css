@@ -6,6 +6,10 @@
   @apply text-white;
 }
 
+.distort {
+  backdrop-filter: url("#turbulence");
+}
+
 input {
   @apply text-black;
 }
