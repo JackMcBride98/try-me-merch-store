@@ -135,22 +135,24 @@ export default function Home({ gigs }: HomeProps) {
               )}
             </tbody>
           </table>
-          <div className="relative w-full">
-            <Image
-              src="/gig.jpg"
-              alt="try me on steps in funky trousers"
-              width={2579}
-              height={3869}
-            />
+          <div className="relative flex w-full flex-col items-center bg-transparent">
+            <div>
+              <Image
+                src="/gig.jpg"
+                alt="try me on stage"
+                width={1934}
+                height={2579}
+              />
+            </div>
             <div className="absolute top-0 flex h-full w-full items-center justify-center space-x-4 sm:space-x-8 md:space-x-12 lg:space-x-16 xl:space-x-20">
               <SocialLink
                 link="https://www.facebook.com/trymewav/"
-                imageUrl="/facebook-logo.webp"
+                imageUrl="/facebook-logo.png"
                 alt="facebook logo"
               />
               <SocialLink
                 link="https://www.instagram.com/trymewav/"
-                imageUrl="/instagram-logo.webp"
+                imageUrl="/instagram-logo.png"
                 alt="instagram logo"
               />
               <SocialLink
