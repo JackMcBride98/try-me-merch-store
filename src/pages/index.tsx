@@ -1,6 +1,6 @@
 import { SocialLink } from "@/components/socialLink";
 import { prisma } from "@/server/db";
-import { type Gigs } from "@prisma/client";
+import { type Gig } from "@prisma/client";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Head from "next/head";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRef } from "react";
 
 type HomeProps = {
-  gigs: Array<Gigs>;
+  gigs: Array<Gig>;
 };
 
 export default function Home({ gigs }: HomeProps) {
@@ -123,9 +123,7 @@ export default function Home({ gigs }: HomeProps) {
                 </a>
               ))
           ) : (
-            <tr>
-              <td>No upcoming gigs, check linktree</td>
-            </tr>
+            <p>No upcoming gigs, check linktree</p>
           )}
           <p className="my-4 text-2xl">
             Check our{" "}
@@ -182,7 +180,7 @@ export default function Home({ gigs }: HomeProps) {
 }
 
 export async function getStaticProps() {
-  const gigs = await prisma.gigs.findMany();
+  const gigs = await prisma.gig.findMany();
   return {
     props: {
       gigs,

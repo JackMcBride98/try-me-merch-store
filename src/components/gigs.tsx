@@ -11,9 +11,9 @@ export const newGigFormSchema = z.object({
 type GigFormFields = z.infer<typeof newGigFormSchema>;
 
 export const Gigs = () => {
-  const gigs = api.gigs.getAll.useQuery();
-  const newGig = api.gigs.create.useMutation();
-  const deleteGig = api.gigs.delete.useMutation();
+  const gigs = api.gig.getAll.useQuery();
+  const newGig = api.gig.create.useMutation();
+  const deleteGig = api.gig.delete.useMutation();
 
   const handleDeleteGig = async (id: string) => {
     await deleteGig.mutateAsync({ id });

@@ -5,20 +5,23 @@ import type { OurFileRouter } from "@/server/uploadthing";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
+import { api } from "@/utils/api";
 
 export const newProductFormSchema = z.object({
   name: z.string().min(1, "Must not be empty"),
   description: z.string().min(1, "Must not be empty"),
-  sizes: z.array(
-    z.object({
-      size: z.string().min(1),
-      price: z.coerce
-        .number()
-        .multipleOf(0.01, "Maximum 2 decimal places")
-        .min(0),
-      amount: z.coerce.number().int("Must be a whole number").min(0),
-    })
-  ),
+  sizes: z
+    .array(
+      z.object({
+        size: z.string().min(1),
+        price: z.coerce
+          .number()
+          .multipleOf(0.01, "Maximum 2 decimal places")
+          .min(0),
+        amount: z.coerce.number().int("Must be a whole number").min(0),
+      })
+    )
+    .min(1, "Must have at least one size"),
   // images: z.object({
   //   url: z.string().url(),
   //   alt: z.string().min(1),
@@ -28,10 +31,14 @@ export const newProductFormSchema = z.object({
 type ProductFormFields = z.infer<typeof newProductFormSchema>;
 
 export const Products = () => {
+  const products = api.product.getAll.useQuery();
+  const newProduct = api.product.create.useMutation();
+
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>();
 
   const {
     register,
+    trigger,
     control,
     handleSubmit,
     formState: { errors },
@@ -51,18 +58,43 @@ export const Products = () => {
     control: control,
   });
 
-  const onSubmit = handleSubmit((data) => {
-    // await newProduct.mutateAsync(data);
-    // await products.refetch();
-    alert(JSON.stringify(data));
+  const onSubmit = handleSubmit(async (data) => {
+    await newProduct.mutateAsync(data);
+    await products.refetch();
   });
 
   return (
     <>
       <h1 className="text-2xl">Products</h1>
-      <p>
-        This will show a list of products once they are stored in the database
-      </p>
+      {products.data ? (
+        products.data.length > 0 ? (
+          products.data.map((product) => (
+            <div
+              className="child:mx-2 flex divide-x-2 divide-black rounded-md bg-[#7DFCB2]/20 p-2 [&>*]:px-2"
+              key={product.id}
+            >
+              <p>{product.name}</p>
+              <p>{product.description}</p>
+              <div>
+                {product.stockKeepingUnits.map((sku) => (
+                  <div key={sku.id}>
+                    <p>{sku.size}</p>
+                    <p>{sku.price}</p>
+                    <p>{sku.amount}</p>
+                  </div>
+                ))}
+              </div>
+              {/* <p>{product.images}</p> */}
+              <button onClick={() => alert("delete")}>X</button>
+            </div>
+          ))
+        ) : (
+          <p>No products yet</p>
+        )
+      ) : (
+        <p>Loading products...</p>
+      )}
+
       <h1 className="text-2xl">New Product</h1>
       <form
         onSubmit={onSubmit}
@@ -128,10 +160,14 @@ export const Products = () => {
             </p>
           </div>
         ))}
+        <p className="text-red-500">{errors.sizes?.root?.message}</p>
         <button
           type="button"
           className="rounded-md bg-black p-4 text-white"
-          onClick={() => append({ size: "", price: 0, amount: 0 })}
+          onClick={async () => {
+            append({ size: "", price: 0, amount: 0 });
+            await trigger("sizes");
+          }}
         >
           Add Size
         </button>
