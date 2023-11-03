@@ -33,6 +33,12 @@ type ProductFormFields = z.infer<typeof newProductFormSchema>;
 export const Products = () => {
   const products = api.product.getAll.useQuery();
   const newProduct = api.product.create.useMutation();
+  const deleteProduct = api.product.delete.useMutation();
+
+  const handleDeleteProduct = async (id: string) => {
+    await deleteProduct.mutateAsync({ id });
+    await products.refetch();
+  };
 
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>();
 
@@ -85,7 +91,7 @@ export const Products = () => {
                 ))}
               </div>
               {/* <p>{product.images}</p> */}
-              <button onClick={() => alert("delete")}>X</button>
+              <button onClick={() => handleDeleteProduct(product.id)}>X</button>
             </div>
           ))
         ) : (

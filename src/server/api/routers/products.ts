@@ -45,14 +45,14 @@ export const productRouter = createTRPCRouter({
       return newProduct;
     }),
 
-  // delete: protectedProcedure
-  //   .input(z.object({ id: z.string() }))
-  //   .mutation(async ({ ctx, input }) => {
-  //     const deletedGig = await ctx.prisma.gigs.delete({
-  //       where: { id: input.id },
-  //     });
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const deletedProduct = await ctx.prisma.product.delete({
+        where: { id: input.id },
+      });
 
-  //     await ctx.res.revalidate("/");
-  //     return deletedGig;
-  //   }),
+      // await ctx.res.revalidate("/store");
+      return deletedProduct;
+    }),
 });
