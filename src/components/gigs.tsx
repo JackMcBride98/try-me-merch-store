@@ -10,7 +10,7 @@ export const newGigFormSchema = z.object({
 });
 type FormFields = z.infer<typeof newGigFormSchema>;
 
-export const NewGigForm = () => {
+export const Gigs = () => {
   const gigs = api.gigs.getAll.useQuery();
   const newGig = api.gigs.create.useMutation();
   const deleteGig = api.gigs.delete.useMutation();
@@ -36,17 +36,19 @@ export const NewGigForm = () => {
       <p>Upcoming gigs</p>
       {gigs.data ? (
         gigs.data.length > 0 ? (
-          gigs.data.map((gig) => (
-            <div
-              className="child:mx-2 flex divide-x-2 divide-black [&>*]:px-2"
-              key={gig.id}
-            >
-              <p>{gig.name}</p>
-              <p>{gig.date.toDateString()}</p>
-              <p>{gig.link}</p>
-              <button onClick={() => handleDeleteGig(gig.id)}>X</button>
-            </div>
-          ))
+          gigs.data
+            .sort((a, b) => a.date.getTime() - b.date.getTime())
+            .map((gig) => (
+              <div
+                className="child:mx-2 flex divide-x-2 divide-black rounded-md bg-[#7DFCB2]/20 p-2 [&>*]:px-2"
+                key={gig.id}
+              >
+                <p>{gig.name}</p>
+                <p>{gig.date.toDateString()}</p>
+                <p>{gig.link}</p>
+                <button onClick={() => handleDeleteGig(gig.id)}>X</button>
+              </div>
+            ))
         ) : (
           <p>No gigs yet</p>
         )

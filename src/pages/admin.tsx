@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
-import { NewGigForm } from "@/components/newGigForm";
+import { Gigs } from "@/components/gigs";
 import { UploadButton } from "@uploadthing/react";
 import "@uploadthing/react/styles.css";
 import { type OurFileRouter } from "@/server/uploadthing";
@@ -47,7 +47,7 @@ export default function Admin() {
           height={256}
           className="py-1"
         />
-        <NewGigForm />
+        <Gigs />
         <UploadButton<OurFileRouter>
           endpoint="imageUploader"
           onClientUploadComplete={(res) => {

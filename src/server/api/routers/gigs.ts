@@ -4,7 +4,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { newGigFormSchema } from "@/components/newGigForm";
+import { newGigFormSchema } from "@/components/gigs";
 
 export const gigsRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {

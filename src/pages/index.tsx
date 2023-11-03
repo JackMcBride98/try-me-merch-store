@@ -109,15 +109,19 @@ export default function Home({ gigs }: HomeProps) {
             Upcoming gigs
           </h2>
           {gigs.length > 0 ? (
-            gigs.map((gig) => (
-              <a
-                href={gig.link}
-                key={gig.id}
-                className="glow distort mx-2 my-6 flex rounded-md bg-[#7DFCB2]/20 p-2 transition hover:scale-105 md:text-2xl"
-              >
-                {gig.name} {gig.date.toLocaleDateString()}
-              </a>
-            ))
+            gigs
+              .sort((a, b) => a.date.getTime() - b.date.getTime())
+              .map((gig) => (
+                <a
+                  href={gig.link}
+                  key={gig.id}
+                  className="glow distort mx-2 my-6 flex rounded-md bg-[#7DFCB2]/20 p-2 transition hover:scale-105 md:text-2xl"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {gig.name} {gig.date.toLocaleDateString()}
+                </a>
+              ))
           ) : (
             <tr>
               <td>No upcoming gigs, check linktree</td>
