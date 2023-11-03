@@ -1,11 +1,10 @@
-import { UploadButton } from "@uploadthing/react";
-import { useState } from "react";
-import Image from "next/image";
-import type { OurFileRouter } from "@/server/uploadthing";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { api } from "@/utils/api";
+import { ProductSizes } from "./productSizes";
+import { ProductImages } from "./productImages";
+import Image from "next/image";
 
 export const newProductFormSchema = z.object({
   name: z.string().min(1, "Must not be empty"),
@@ -22,13 +21,16 @@ export const newProductFormSchema = z.object({
       })
     )
     .min(1, "Must have at least one size"),
-  // images: z.object({
-  //   url: z.string().url(),
-  //   alt: z.string().min(1),
-  //   order: z.number().min(0),
-  // }),
+  images: z
+    .array(
+      z.object({
+        url: z.string().url(),
+        order: z.number().min(0),
+      })
+    )
+    .min(1, "Must have at least one image"),
 });
-type ProductFormFields = z.infer<typeof newProductFormSchema>;
+export type ProductFormFields = z.infer<typeof newProductFormSchema>;
 
 export const Products = () => {
   const products = api.product.getAll.useQuery();
@@ -40,13 +42,12 @@ export const Products = () => {
     await products.refetch();
   };
 
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>();
-
   const {
     register,
     trigger,
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<ProductFormFields>({
     resolver: zodResolver(newProductFormSchema),
@@ -56,18 +57,16 @@ export const Products = () => {
         { size: "M", price: 0, amount: 0 },
         { size: "L", price: 0, amount: 0 },
       ],
+      images: [],
     },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    name: "sizes",
-    control: control,
   });
 
   const onSubmit = handleSubmit(async (data) => {
     await newProduct.mutateAsync(data);
     await products.refetch();
   });
+
+  console.log(getValues());
 
   return (
     <>
@@ -76,22 +75,43 @@ export const Products = () => {
         products.data.length > 0 ? (
           products.data.map((product) => (
             <div
-              className="child:mx-2 flex divide-x-2 divide-black rounded-md bg-[#7DFCB2]/20 p-2 [&>*]:px-2"
+              className="relative flex flex-col items-center space-y-2 rounded-md bg-[#7DFCB2]/20 p-4"
               key={product.id}
             >
-              <p>{product.name}</p>
-              <p>{product.description}</p>
-              <div>
+              <p>Name: {product.name}</p>
+              <p>Description: {product.description}</p>
+              <p>Sizes</p>
+              <div className="flex flex-col space-y-2">
                 {product.stockKeepingUnits.map((sku) => (
-                  <div key={sku.id}>
-                    <p>{sku.size}</p>
-                    <p>{sku.price}</p>
-                    <p>{sku.amount}</p>
+                  <div className="flex space-x-2" key={sku.id}>
+                    <p>Size: {sku.size}</p>
+                    <p>Price: £{sku.price}</p>
+                    <p>Stock: {sku.amount}</p>
                   </div>
                 ))}
               </div>
+              <p>Images</p>
+              <div className="flex flex-col">
+                {product.images
+                  .sort((a, b) => a.order - b.order)
+                  .map((image) => (
+                    <div key={image.id}>
+                      <Image
+                        alt={`Product image ${image.order + 1}`}
+                        src={image.url}
+                        width={256}
+                        height={256}
+                      />
+                    </div>
+                  ))}
+              </div>
               {/* <p>{product.images}</p> */}
-              <button onClick={() => handleDeleteProduct(product.id)}>X</button>
+              <button
+                className="absolute -top-2 right-2 hover:scale-105"
+                onClick={() => handleDeleteProduct(product.id)}
+              >
+                X
+              </button>
             </div>
           ))
         ) : (
@@ -104,7 +124,7 @@ export const Products = () => {
       <h1 className="text-2xl">New Product</h1>
       <form
         onSubmit={onSubmit}
-        className="flex flex-col items-center space-y-4"
+        className="flex flex-col items-center space-y-4 pb-4"
       >
         <label htmlFor="name" className="flex w-full justify-between space-x-2">
           <p>Name</p>
@@ -121,92 +141,21 @@ export const Products = () => {
           <p className="text-red-500">{errors.description?.message}</p>
         </label>
 
-        <h1 className="text-2xl">Sizes</h1>
+        <ProductSizes
+          control={control}
+          errors={errors}
+          register={register}
+          trigger={trigger}
+        />
 
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-md border border-black p-4">
-            <label htmlFor="size" className="relative">
-              <button
-                onClick={() => remove(index)}
-                className="absolute -right-2 -top-4 hover:scale-110"
-              >
-                X
-              </button>
-
-              <p>Size</p>
-              <input
-                {...register(`sizes.${index}.size`)}
-                className="flex w-full justify-between space-x-2"
-              />
-              <p className="text-red-500">
-                {errors.sizes?.[index]?.size?.message}
-              </p>
-            </label>
-
-            <label htmlFor="price">
-              <p>Price</p>
-              <input
-                {...register(`sizes.${index}.price`)}
-                className="flex w-full justify-between space-x-2"
-              />
-            </label>
-            <p className="text-red-500">
-              {errors.sizes?.[index]?.price?.message}
-            </p>
-
-            <label htmlFor="amount">
-              <p>Amount</p>
-              <input
-                {...register(`sizes.${index}.amount`)}
-                className="flex w-full justify-between space-x-2"
-              />
-            </label>
-            <p className="text-red-500">
-              {errors.sizes?.[index]?.amount?.message}
-            </p>
-          </div>
-        ))}
-        <p className="text-red-500">{errors.sizes?.root?.message}</p>
-        <button
-          type="button"
-          className="rounded-md bg-black p-4 text-white"
-          onClick={async () => {
-            append({ size: "", price: 0, amount: 0 });
-            await trigger("sizes");
-          }}
-        >
-          Add Size
-        </button>
+        <ProductImages errors={errors} control={control} />
 
         <input
           type="submit"
           value="Submit"
-          className="rounded-md bg-black p-4 text-white"
+          className="mb-4 rounded-md bg-black p-4 text-white"
         />
       </form>
-      <UploadButton<OurFileRouter>
-        endpoint="imageUploader"
-        onClientUploadComplete={(res) => {
-          // Do something with the response
-          console.log("Files: ", res);
-          if (res) {
-            setUploadedImageUrl(res[0]?.url);
-          }
-        }}
-        onUploadError={(error: Error) => {
-          // Do something with the error.
-          alert(`ERROR! ${error.message}`);
-        }}
-      />
-      {uploadedImageUrl && (
-        <Image
-          src={uploadedImageUrl}
-          alt="Uploaded image"
-          width={256}
-          height={256}
-          className="py-1"
-        />
-      )}
     </>
   );
 };

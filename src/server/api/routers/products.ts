@@ -9,7 +9,7 @@ import { newProductFormSchema } from "@/components/products";
 export const productRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.product.findMany({
-      include: { stockKeepingUnits: true },
+      include: { stockKeepingUnits: true, images: true },
     });
   }),
 
@@ -30,13 +30,14 @@ export const productRouter = createTRPCRouter({
               })),
             },
           },
-          // images: {
-          //   create: {
-          //     url: "test",
-          //     alt: "test",
-          //     order: 1,
-          //   },
-          // },
+          images: {
+            createMany: {
+              data: input.images.map((image) => ({
+                url: image.url,
+                order: image.order,
+              })),
+            },
+          },
         },
       });
 
