@@ -8,7 +8,7 @@ export const newGigFormSchema = z.object({
   date: z.string().refine((val) => !isNaN(Date.parse(val)), "Not a valid date"),
   link: z.string().url(),
 });
-type FormFields = z.infer<typeof newGigFormSchema>;
+type GigFormFields = z.infer<typeof newGigFormSchema>;
 
 export const Gigs = () => {
   const gigs = api.gigs.getAll.useQuery();
@@ -24,7 +24,7 @@ export const Gigs = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormFields>({ resolver: zodResolver(newGigFormSchema) });
+  } = useForm<GigFormFields>({ resolver: zodResolver(newGigFormSchema) });
 
   const onSubmit = handleSubmit(async (data) => {
     await newGig.mutateAsync(data);
@@ -33,7 +33,7 @@ export const Gigs = () => {
 
   return (
     <>
-      <p>Upcoming gigs</p>
+      <h1 className="text-2xl">Upcoming gigs</h1>
       {gigs.data ? (
         gigs.data.length > 0 ? (
           gigs.data
@@ -60,22 +60,26 @@ export const Gigs = () => {
         onSubmit={onSubmit}
         className="flex flex-col items-center space-y-4"
       >
-        <p>New gig</p>
+        <h1 className="text-2xl">New gig</h1>
+
         <label htmlFor="name" className="flex w-full justify-between space-x-2">
           <p>Name</p>
           <input {...register("name")} />
+          <p className="text-red-500">{errors.name?.message}</p>
         </label>
-        <p className="text-red-500">{errors.name?.message}</p>
+
         <label htmlFor="date" className="flex w-full justify-between space-x-2">
           <p>Date</p>
           <input type="date" {...register("date")} className="" />
+          <p className="text-red-500">{errors.date?.message}</p>
         </label>
-        <p className="text-red-500">{errors.date?.message}</p>
+
         <label htmlFor="link" className="flex w-full justify-between space-x-2">
           <p>Tix link</p>
           <input {...register("link")} className="" />
+          <p className="text-red-500">{errors.link?.message}</p>
         </label>
-        <p className="text-red-500">{errors.link?.message}</p>
+
         <input
           type="submit"
           value="Submit"

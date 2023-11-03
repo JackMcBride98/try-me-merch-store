@@ -2,14 +2,11 @@ import Head from "next/head";
 import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { Gigs } from "@/components/gigs";
-import { UploadButton } from "@uploadthing/react";
 import "@uploadthing/react/styles.css";
-import { type OurFileRouter } from "@/server/uploadthing";
-import { useState } from "react";
+import { Products } from "@/components/products";
 
 export default function Admin() {
   const { data: session } = useSession();
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>();
 
   if (!session) {
     return (
@@ -48,29 +45,7 @@ export default function Admin() {
           className="py-1"
         />
         <Gigs />
-        <UploadButton<OurFileRouter>
-          endpoint="imageUploader"
-          onClientUploadComplete={(res) => {
-            // Do something with the response
-            console.log("Files: ", res);
-            if (res) {
-              setUploadedImageUrl(res[0]?.url);
-            }
-          }}
-          onUploadError={(error: Error) => {
-            // Do something with the error.
-            alert(`ERROR! ${error.message}`);
-          }}
-        />
-        {uploadedImageUrl && (
-          <Image
-            src={uploadedImageUrl}
-            alt="Uploaded image"
-            width={256}
-            height={256}
-            className="py-1"
-          />
-        )}
+        <Products />
       </div>
     </>
   );
