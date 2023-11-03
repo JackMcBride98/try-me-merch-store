@@ -1,6 +1,6 @@
 import { SocialLink } from "@/components/socialLink";
 import { prisma } from "@/server/db";
-import { type Gigs } from "@prisma/client";
+import { type Gig } from "@prisma/client";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Head from "next/head";
@@ -9,11 +9,11 @@ import Link from "next/link";
 import { useRef } from "react";
 
 type HomeProps = {
-  gigs: Array<Gigs>;
+  gigs: Array<Gig>;
 };
 
 export default function Home({ gigs }: HomeProps) {
-  const gigsRef = useRef<HTMLTableElement>(null);
+  const gigsRef = useRef<HTMLHeadingElement>(null);
 
   return (
     <>
@@ -105,52 +105,54 @@ export default function Home({ gigs }: HomeProps) {
             Visit store
           </Link>
 
-          <h2 className="mb-2 mt-4 text-2xl">Upcoming gigs</h2>
-          <table
-            className="glow distort mx-2 my-6 table rounded-md bg-[#7DFCB2]/20 md:text-2xl"
-            ref={gigsRef}
-          >
-            <thead className="border-b border-black">
-              <tr className="divide-x divide-black">
-                <th>Venue</th>
-                <th>Date</th>
-                <th>Tix</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black">
-              {gigs.length > 0 ? (
-                gigs.map((gig) => (
-                  <tr key={gig.id} className="divide-x divide-black">
-                    <td>{gig.name}</td>
-                    <td>{gig.date.toLocaleDateString()}</td>
-                    <td>
-                      <a href={gig.link}>Link</a>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td>No gigs yet</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          <div className="relative w-full">
-            <Image
-              src="/gig.jpg"
-              alt="try me on steps in funky trousers"
-              width={2579}
-              height={3869}
-            />
+          <h2 ref={gigsRef} className="mb-2 mt-4 text-2xl">
+            Upcoming gigs
+          </h2>
+          {gigs.length > 0 ? (
+            gigs
+              .sort((a, b) => a.date.getTime() - b.date.getTime())
+              .map((gig) => (
+                <a
+                  href={gig.link}
+                  key={gig.id}
+                  className="glow distort mx-2 my-6 flex rounded-md bg-[#7DFCB2]/20 p-2 transition hover:scale-105 md:text-2xl"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {gig.name} {gig.date.toLocaleDateString()}
+                </a>
+              ))
+          ) : (
+            <p>No upcoming gigs, check linktree</p>
+          )}
+          <p className="my-4 text-2xl">
+            Check our{" "}
+            <a
+              href={"https://linktr.ee/trymewav"}
+              className="underline hover:italic"
+            >
+              linktree
+            </a>{" "}
+            too
+          </p>
+          <div className="relative flex h-full w-full flex-col items-center bg-transparent">
+            <div>
+              <Image
+                src="/gig.jpg"
+                alt="try me on stage"
+                width={2579}
+                height={3869}
+              />
+            </div>
             <div className="absolute top-0 flex h-full w-full items-center justify-center space-x-4 sm:space-x-8 md:space-x-12 lg:space-x-16 xl:space-x-20">
               <SocialLink
                 link="https://www.facebook.com/trymewav/"
-                imageUrl="/facebook-logo.webp"
+                imageUrl="/facebook-logo.png"
                 alt="facebook logo"
               />
               <SocialLink
                 link="https://www.instagram.com/trymewav/"
-                imageUrl="/instagram-logo.webp"
+                imageUrl="/instagram-logo.png"
                 alt="instagram logo"
               />
               <SocialLink
@@ -178,7 +180,7 @@ export default function Home({ gigs }: HomeProps) {
 }
 
 export async function getStaticProps() {
-  const gigs = await prisma.gigs.findMany();
+  const gigs = await prisma.gig.findMany();
   return {
     props: {
       gigs,

@@ -4,17 +4,17 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { formSchema } from "@/pages/admin";
+import { newGigFormSchema } from "@/components/gigs";
 
-export const gigsRouter = createTRPCRouter({
+export const gigRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.gigs.findMany();
+    return ctx.prisma.gig.findMany();
   }),
 
   create: protectedProcedure
-    .input(formSchema)
+    .input(newGigFormSchema)
     .mutation(async ({ ctx, input }) => {
-      const returnThis = await ctx.prisma.gigs.create({
+      const newGig = await ctx.prisma.gig.create({
         data: {
           ...input,
           date: new Date(input.date),
@@ -22,17 +22,17 @@ export const gigsRouter = createTRPCRouter({
       });
 
       await ctx.res.revalidate("/");
-      return returnThis;
+      return newGig;
     }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const returnThis = await ctx.prisma.gigs.delete({
+      const deletedGig = await ctx.prisma.gig.delete({
         where: { id: input.id },
       });
 
       await ctx.res.revalidate("/");
-      return returnThis;
+      return deletedGig;
     }),
 });
