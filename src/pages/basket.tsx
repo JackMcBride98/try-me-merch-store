@@ -32,7 +32,7 @@ export default function Basket() {
         }
       />
 
-      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-8 pb-4 text-white">
+      <main className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-8 pb-4 text-white">
         <h1 className="mt-[4.5rem] text-2xl ">Products in Basket</h1>
         {basket.map((product) => (
           <>
@@ -41,7 +41,10 @@ export default function Basket() {
             </p>
           </>
         ))}
-      </div>
+        <button className="rounded-md bg-black p-4 text-4xl text-white">
+          Checkout 😱
+        </button>
+      </main>
     </>
   );
 }
