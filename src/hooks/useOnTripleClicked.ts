@@ -1,20 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function useOnTripleClicked(onClick: () => void) {
+const CLICK_DELAY_MS = 500;
+
+export default function useOnTripleClicked(
+  onTripleClick: () => void,
+  onSingleClick: () => void
+) {
   const ref = useRef<HTMLImageElement>(null);
   const [clickCount, setClickCount] = useState(0);
 
   useEffect(() => {
     const element = ref.current;
     const clickEventListener = () => {
-      const prevClickCount = clickCount;
-      setClickCount(prevClickCount + 1);
-      if (prevClickCount + 1 > 2) {
-        onClick();
-      }
-      setTimeout(() => {
-        setClickCount(0);
-      }, 500);
+      setClickCount((prev) => prev + 1);
     };
 
     if (element) {
@@ -26,7 +24,21 @@ export default function useOnTripleClicked(onClick: () => void) {
         element.removeEventListener("click", clickEventListener);
       }
     };
-  }, [onClick]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (clickCount === 1) {
+        onSingleClick();
+      }
+      setClickCount(0);
+    }, CLICK_DELAY_MS);
+
+    if (clickCount === 3) {
+      onTripleClick();
+    }
+    return () => clearTimeout(timer);
+  }, [clickCount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return ref;
 }

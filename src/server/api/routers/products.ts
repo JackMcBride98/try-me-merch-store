@@ -41,8 +41,7 @@ export const productRouter = createTRPCRouter({
         },
       });
 
-      //add back when /store is making call to getStaticProps
-      // await ctx.res.revalidate("/store");
+      await ctx.res.revalidate("/store");
       return newProduct;
     }),
 
@@ -53,7 +52,7 @@ export const productRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
-      // await ctx.res.revalidate("/store");
+      await ctx.res.revalidate("/store");
       return deletedProduct;
     }),
 });
