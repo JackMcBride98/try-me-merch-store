@@ -1,3 +1,10 @@
+TODO:
+-highlight/scroll to errors on admin page when submitting products
+-single size products option
+-seperate page for adding products??
+-homepage UI improvements
+-fix basket state not persisting on refresh
+
 Remember to run `npx prisma generate` and `prisma db push` when making changes to the schema.prisma file
 
 # Create T3 App

@@ -39,7 +39,7 @@ export default function Store({ products }: StoreProps) {
         }
       />
 
-      <div className="max-w-screen flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-black to-[#04100C] text-white">
+      <div className="max-w-screen flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-black to-[#04100C] pb-4 text-white">
         <h1 className="mb-4 mt-24 text-4xl">Store</h1>
         <div className="grid gap-4 md:grid-cols-2">
           {products.map((product) => {

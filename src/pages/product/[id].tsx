@@ -7,8 +7,9 @@ import { prisma } from "@/server/db";
 import { type GetStaticPropsContext } from "next";
 import { type ParsedUrlQuery } from "querystring";
 import { SizeSelect } from "@/components/sizeSelect";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Header } from "@/components/header";
+import BasketContext from "@/components/basketProvider";
 
 interface IParams extends ParsedUrlQuery {
   id: string;
@@ -22,11 +23,12 @@ export type ProductPageProps = {
 
 export default function ProductPage({ product }: ProductPageProps) {
   const [size, setSize] = useState(product.stockKeepingUnits[0]?.size ?? "");
-  const [quantity, setQuantity] = useState(1);
-
   const selectedSku = product.stockKeepingUnits.find(
     (sku) => sku.size === size
-  );
+  )!;
+  const isOutOfStock = selectedSku.amount === 0;
+  const [quantity, setQuantity] = useState(isOutOfStock ? 0 : 1);
+  const [, addToBasket] = useContext(BasketContext);
 
   return (
     <>
@@ -69,32 +71,38 @@ export default function ProductPage({ product }: ProductPageProps) {
           setValue={setSize}
           options={product.stockKeepingUnits}
         />
-        <p>In Stock - {selectedSku?.amount}</p>
+        <p>In Stock - {selectedSku.amount}</p>
         <p>Quantity</p>
         <div className="flex items-center border border-[#7DFCB2]/20 bg-white text-2xl text-black">
           <button
             onClick={() => setQuantity((q) => (q - 1 > 1 ? q - 1 : 1))}
-            className="w-8 text-center font-bold"
+            className="w-8 text-center font-bold disabled:cursor-not-allowed"
+            disabled={isOutOfStock}
           >
             -
           </button>
           <input
             type="number"
             value={quantity}
-            className="hide-arrows h-full w-16 text-center text-lg"
+            className="hide-arrows h-full w-16 text-center text-lg disabled:cursor-not-allowed"
+            disabled={isOutOfStock}
           />
           <button
             onClick={() =>
-              setQuantity((q) =>
-                q + 1 <= (selectedSku?.amount ?? 10) ? q + 1 : q
-              )
+              setQuantity((q) => (q + 1 <= selectedSku.amount ? q + 1 : q))
             }
-            className="w-8 text-center font-bold"
+            className="w-8 text-center font-bold disabled:cursor-not-allowed"
+            disabled={isOutOfStock}
           >
             +
           </button>
         </div>
-        <button className="rounded-md bg-black p-4 text-white">
+        <button
+          onClick={() =>
+            addToBasket({ ...selectedSku, name: product.name, quantity })
+          }
+          className="rounded-md bg-black p-4 text-white"
+        >
           Add to basket
         </button>
       </div>
