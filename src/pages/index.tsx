@@ -1,4 +1,5 @@
 import { SocialLink } from "@/components/socialLink";
+import useOnTripleClicked from "@/hooks/useOnTripleClicked";
 import { prisma } from "@/server/db";
 import { type Gig } from "@prisma/client";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -6,6 +7,7 @@ import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useRef } from "react";
 
 type HomeProps = {
@@ -13,7 +15,9 @@ type HomeProps = {
 };
 
 export default function Home({ gigs }: HomeProps) {
+  const router = useRouter();
   const gigsRef = useRef<HTMLHeadingElement>(null);
+  const logoRef = useOnTripleClicked(async () => router.push("/admin"));
 
   return (
     <>
@@ -71,6 +75,7 @@ export default function Home({ gigs }: HomeProps) {
               width={64}
               height={64}
               className="py-1"
+              ref={logoRef}
             />
             <svg
               width="15"

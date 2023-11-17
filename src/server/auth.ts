@@ -5,7 +5,7 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
 
@@ -44,12 +44,22 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+    signIn({ account, profile }) {
+      const allowedEmails = ["mcbride.jack1@gmail.com", "tryme.wav@gmail.com"];
+      if (
+        account?.provider === "google" &&
+        allowedEmails.includes(profile?.email ?? "")
+      ) {
+        return true;
+      }
+      return false;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     /**
      * ...add more providers here.

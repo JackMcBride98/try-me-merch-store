@@ -1,9 +1,10 @@
 import Head from "next/head";
 import Image from "next/image";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { Gigs } from "@/components/gigs";
 import "@uploadthing/react/styles.css";
 import { Products } from "@/components/products";
+import Link from "next/link";
 
 export default function Admin() {
   const { data: session } = useSession();
@@ -36,16 +37,24 @@ export default function Admin() {
         <meta name="description" content="The admin page" />
         <link rel="icon" href="/logo.png" />
       </Head>
-      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-8">
-        <Image
-          src="/logo.png"
-          alt="Try Me logo"
-          width={256}
-          height={256}
-          className="py-1"
-        />
+      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-8 pb-4">
+        <Link href="/">
+          <Image
+            src="/logo.png"
+            alt="Try Me logo"
+            width={256}
+            height={256}
+            className="py-1"
+          />
+        </Link>
         <Gigs />
         <Products />
+        <button
+          onClick={() => signOut()}
+          className="rounded-md bg-black p-4 text-white"
+        >
+          Sign out
+        </button>
       </div>
     </>
   );
