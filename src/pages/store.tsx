@@ -41,7 +41,7 @@ export default function Store({ products }: StoreProps) {
 
       <div className="max-w-screen flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-black to-[#04100C] text-white">
         <h1 className="mb-4 mt-24 text-4xl">Store</h1>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 md:grid-cols-2">
           {products.map((product) => {
             const prices = [
               ...new Set(product.stockKeepingUnits?.map((sku) => sku.price)),
@@ -54,7 +54,7 @@ export default function Store({ products }: StoreProps) {
               >
                 {product.images[0] && (
                   <>
-                    <div className="relative flex h-80 w-80 items-center justify-center">
+                    <div className="relative flex h-60 w-60 items-center justify-center xxs:h-64 xxs:w-64 xs:h-72 xs:w-72 md:h-80 md:w-80">
                       <Image
                         alt={product.name}
                         src={product.images[0].url}
