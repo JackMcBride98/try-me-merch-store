@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Gigs } from "@/components/gigs";
 import "@uploadthing/react/styles.css";
 import { Products } from "@/components/products";
+import Link from "next/link";
 
 export default function Admin() {
   const { data: session } = useSession();
@@ -37,13 +38,15 @@ export default function Admin() {
         <link rel="icon" href="/logo.png" />
       </Head>
       <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-8 pb-4">
-        <Image
-          src="/logo.png"
-          alt="Try Me logo"
-          width={256}
-          height={256}
-          className="py-1"
-        />
+        <Link href="/">
+          <Image
+            src="/logo.png"
+            alt="Try Me logo"
+            width={256}
+            height={256}
+            className="py-1"
+          />
+        </Link>
         <Gigs />
         <Products />
         <button
