@@ -27,8 +27,8 @@ export default function Home({ gigs }: HomeProps) {
         <link rel="icon" href="/logo.png" />
       </Head>
 
-      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center">
-        <header className="fixed z-50 flex w-full bg-[#7DFCB2]/20 text-white">
+      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center text-white">
+        <header className="fixed z-50 flex w-full bg-[#7DFCB2]/20">
           <div className="flex w-full items-center justify-between">
             <DropdownMenu.Root modal={false}>
               <DropdownMenu.Trigger asChild>

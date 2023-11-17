@@ -1,5 +1,5 @@
 import { prisma } from "@/server/db";
-import type { Prisma, Product } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Head from "next/head";
@@ -64,7 +64,7 @@ export default function Store({ products }: StoreProps) {
           </svg>
         </div>
       </header>
-      <div className="max-w-screen flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-black to-[#04100C]">
+      <div className="max-w-screen flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-black to-[#04100C] text-white">
         <h1 className="mb-4 mt-24 text-4xl">Store</h1>
         <div className="grid grid-cols-2 gap-4">
           {products.map((product) => {
@@ -74,20 +74,24 @@ export default function Store({ products }: StoreProps) {
             return (
               <Link
                 href={`/product/${product.id}`}
-                className="flex flex-col items-center rounded-md border border-[#7DFCB2] p-4 transition-all hover:bg-[#7DFCB2]/20"
+                className="group flex h-full flex-col items-center rounded-md border border-[#7DFCB2] p-2 transition-all hover:bg-[#7DFCB2]/20"
                 key={product.id}
               >
-                <p>{product.name}</p>
                 {product.images[0] && (
-                  <div>
-                    <Image
-                      alt={product.name}
-                      src={product.images[0].url}
-                      width={400}
-                      height={400}
-                    />
-                  </div>
+                  <>
+                    <div className="relative flex h-80 w-80 items-center justify-center">
+                      <Image
+                        alt={product.name}
+                        src={product.images[0].url}
+                        fill={true}
+                        className="object-contain"
+                      />
+                    </div>
+                  </>
                 )}
+                <p className="text-xl font-bold group-hover:underline">
+                  {product.name}
+                </p>
                 <p>
                   {prices.length > 1
                     ? `£${prices[0]} - £${prices[-1]}`

@@ -7,6 +7,8 @@ import { type Prisma } from "@prisma/client";
 import { prisma } from "@/server/db";
 import { type GetStaticPropsContext } from "next";
 import { type ParsedUrlQuery } from "querystring";
+import { SizeSelect } from "@/components/sizeSelect";
+import { useState } from "react";
 
 interface IParams extends ParsedUrlQuery {
   id: string;
@@ -19,6 +21,13 @@ export type ProductPageProps = {
 };
 
 export default function ProductPage({ product }: ProductPageProps) {
+  const [size, setSize] = useState(product.stockKeepingUnits[0]?.size ?? "");
+  const [quantity, setQuantity] = useState(1);
+
+  const selectedSku = product.stockKeepingUnits.find(
+    (sku) => sku.size === size
+  );
+
   return (
     <>
       <Head>
@@ -68,7 +77,7 @@ export default function ProductPage({ product }: ProductPageProps) {
           </svg>
         </div>
       </header>
-      <div className="max-w-screen flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-black to-[#04100C]">
+      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-4 bg-gradient-to-b from-black to-[#04100C] pb-4 text-white">
         <h1 className="mb-4 mt-24 text-4xl">{product.name}</h1>
         {product.images.map((image) => (
           <Image
@@ -79,6 +88,44 @@ export default function ProductPage({ product }: ProductPageProps) {
             height={250}
           />
         ))}
+        <p>Description - {product.description}</p>
+        <p>Size</p>
+        <SizeSelect
+          value={size}
+          setValue={setSize}
+          options={product.stockKeepingUnits}
+        />
+        <p>In Stock - {selectedSku?.amount}</p>
+        <p>Quantity</p>
+        <div className="flex items-center border border-[#7DFCB2]/20 bg-white text-2xl text-black">
+          <button
+            onClick={() => setQuantity((q) => (q - 1 > 1 ? q - 1 : 1))}
+            className="w-8 text-center font-bold"
+          >
+            -
+          </button>
+          <input
+            type="number"
+            value={quantity}
+            className="hide-arrows h-full w-16 text-center text-lg"
+          />
+          <button
+            onClick={() =>
+              setQuantity((q) =>
+                q + 1 <= (selectedSku?.amount ?? 10) ? q + 1 : q
+              )
+            }
+            className="w-8 text-center font-bold"
+          >
+            +
+          </button>
+        </div>
+        <button
+          // onClick={() => signOut()}
+          className="rounded-md bg-black p-4 text-white"
+        >
+          Add to basket
+        </button>
       </div>
     </>
   );

@@ -37,7 +37,7 @@ export default function Admin() {
         <meta name="description" content="The admin page" />
         <link rel="icon" href="/logo.png" />
       </Head>
-      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-8 pb-4">
+      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-8 pb-4 text-white">
         <Link href="/">
           <Image
             src="/logo.png"
