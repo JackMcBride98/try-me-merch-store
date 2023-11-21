@@ -19,6 +19,11 @@ export const Header = ({ dropdownOptions }: HeaderProps) => {
   );
   const [basket] = useContext(BasketContext);
 
+  const basketQuantity = basket.reduce(
+    (accumulator, product) => accumulator + product.quantity,
+    0
+  );
+
   return (
     <header className="fixed z-50 flex w-full bg-[#7DFCB2]/20">
       <div className="flex w-full items-center justify-between text-white">
@@ -39,12 +44,7 @@ export const Header = ({ dropdownOptions }: HeaderProps) => {
           ref={logoRef}
         />
         <Link href="/basket" className="mr-2 flex space-x-2">
-          <p>
-            {basket.reduce(
-              (accumulator, product) => accumulator + product.quantity,
-              0
-            )}
-          </p>
+          {basketQuantity > 0 && <p>{basketQuantity}</p>}
           <svg
             width="15"
             height="15"
