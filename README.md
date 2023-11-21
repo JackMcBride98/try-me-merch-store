@@ -4,6 +4,7 @@ TODO:
 -seperate page for adding products??
 -homepage UI improvements
 -fix basket state not persisting on refresh
+-handle deleting of images in uploadthing storage when finished
 
 Remember to run `npx prisma generate` and `prisma db push` when making changes to the schema.prisma file
 
