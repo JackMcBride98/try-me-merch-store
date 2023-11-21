@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const CLICK_DELAY_MS = 500;
+const CLICK_DELAY_MS = 300;
 
 export default function useOnTripleClicked(
   onTripleClick: () => void,
