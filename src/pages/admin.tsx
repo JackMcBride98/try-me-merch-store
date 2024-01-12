@@ -17,7 +17,7 @@ export default function Admin() {
           <meta name="description" content="The admin page" />
           <link rel="icon" href="/logo.png" />
         </Head>
-        <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center justify-center space-y-8 text-lg">
+        <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center justify-center space-y-8 text-lg text-white">
           <p>You must be signed in to use the admin page</p>
           <button
             className="rounded-full bg-[#7DFCB2]/40 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"

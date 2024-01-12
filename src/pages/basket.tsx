@@ -1,14 +1,53 @@
 import BasketContext from "@/components/basketProvider";
 import { Header } from "@/components/header";
+import getStripe from "@/utils/stripe";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 export default function Basket() {
   const { data: session } = useSession();
   const [basket] = useContext(BasketContext);
+
+  const [success, setSuccess] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    try {
+      setRedirecting(true);
+      const stripe = await getStripe();
+
+      const res = await fetch("/api/stripe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        setRedirecting(true);
+        setError(true);
+
+        return setTimeout(() => {
+          setError(false);
+          setRedirecting(false);
+        }, 1500);
+      }
+
+      const result = (await res.json()) as { id: string; url: string };
+
+      window.location.replace(result.url);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setRedirecting(false);
+      setError(false);
+    }
+  };
 
   if (!session) {
     return (
@@ -74,7 +113,10 @@ export default function Basket() {
             </p>
           </>
         ))}
-        <button className="rounded-md bg-black p-4 text-4xl text-white">
+        <button
+          onClick={() => handleCheckout()}
+          className="rounded-md bg-black p-4 text-4xl text-white"
+        >
           Checkout 😱
         </button>
       </main>
