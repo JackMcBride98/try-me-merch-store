@@ -5,6 +5,8 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { newProductFormSchema } from "@/components/products";
+import { env } from "@/env.mjs";
+import Stripe from "stripe";
 
 export const productRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -16,6 +18,24 @@ export const productRouter = createTRPCRouter({
   create: protectedProcedure
     .input(newProductFormSchema)
     .mutation(async ({ ctx, input }) => {
+      const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+      const newStripeProductsBySize: Record<
+        string,
+        Stripe.Response<Stripe.Product>
+      > = {};
+
+      for (const size of input.sizes) {
+        newStripeProductsBySize[size.size] = await stripe.products.create({
+          name: input.name + size.size,
+          description: input.description,
+          images: input.images.map((image) => image.url),
+          default_price_data: {
+            currency: "gbp",
+            unit_amount: size.price * 100,
+          },
+        });
+      }
+
       const newProduct = await ctx.prisma.product.create({
         data: {
           name: input.name,
@@ -27,6 +47,9 @@ export const productRouter = createTRPCRouter({
                 price: size.price,
                 amount: size.amount,
                 size: size.size,
+                stripeProductId: newStripeProductsBySize[size.size]!.id,
+                stripePriceId: newStripeProductsBySize[size.size]!
+                  .default_price as string,
               })),
             },
           },

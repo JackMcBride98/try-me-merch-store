@@ -79,12 +79,14 @@ model Product {
 }
 
 model ProductStockKeepingUnit {
-    id        String  @id @default(cuid())
-    productId String
-    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-    size      String
-    price     Int
-    amount    Int
+    id              String  @id @default(cuid())
+    productId       String
+    product         Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+    size            String
+    price           Int
+    amount          Int
+    stripeProductId String  @unique
+    stripePriceId   String  @unique
 }
 
 model ProductImage {

@@ -26,6 +26,7 @@ export default function Basket() {
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ products: basket }),
       });
 
       if (!res.ok) {

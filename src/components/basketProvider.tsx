@@ -4,6 +4,8 @@ import { createContext, useState } from "react";
 export type BasketProduct = ProductStockKeepingUnit & {
   name: string;
   quantity: number;
+  stripeProductId: string;
+  stripePriceId: string;
 };
 
 export type BasketContextType = [
