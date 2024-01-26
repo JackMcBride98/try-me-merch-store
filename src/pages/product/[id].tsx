@@ -26,9 +26,9 @@ export default function ProductPage({ product }: ProductPageProps) {
   const selectedSku = product.stockKeepingUnits.find(
     (sku) => sku.size === size
   )!;
-  const isOutOfStock = selectedSku.amount === 0;
+  const isOutOfStock = selectedSku.quantity === 0;
   const [quantity, setQuantity] = useState(isOutOfStock ? 0 : 1);
-  const [, addToBasket] = useContext(BasketContext);
+  const [, addToBasket, , basketError] = useContext(BasketContext);
 
   return (
     <>
@@ -71,7 +71,8 @@ export default function ProductPage({ product }: ProductPageProps) {
           setValue={setSize}
           options={product.stockKeepingUnits}
         />
-        <p>In Stock - {selectedSku.amount}</p>
+        <p>Price - £{selectedSku.price.toString()}</p>
+        <p>In Stock - {selectedSku.quantity}</p>
         <p>Quantity</p>
         <div className="flex items-center border border-[#7DFCB2]/20 bg-white text-2xl text-black">
           <button
@@ -86,10 +87,11 @@ export default function ProductPage({ product }: ProductPageProps) {
             value={quantity}
             className="hide-arrows h-full w-16 text-center text-lg disabled:cursor-not-allowed"
             disabled={isOutOfStock}
+            readOnly
           />
           <button
             onClick={() =>
-              setQuantity((q) => (q + 1 <= selectedSku.amount ? q + 1 : q))
+              setQuantity((q) => (q + 1 <= selectedSku.quantity ? q + 1 : q))
             }
             className="w-8 text-center font-bold disabled:cursor-not-allowed"
             disabled={isOutOfStock}
@@ -99,12 +101,18 @@ export default function ProductPage({ product }: ProductPageProps) {
         </div>
         <button
           onClick={() =>
-            addToBasket({ ...selectedSku, name: product.name, quantity })
+            addToBasket({
+              ...selectedSku,
+              name: product.name,
+              quantity,
+              maxQuantity: selectedSku.quantity,
+            })
           }
           className="rounded-md bg-black p-4 text-white"
         >
           Add to basket
         </button>
+        {basketError && <p className="text-red-500">{basketError}</p>}
       </div>
     </>
   );
@@ -126,5 +134,13 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
     include: { stockKeepingUnits: true, images: true },
   });
 
-  return { props: { product } };
+  const cleanedProduct = {
+    ...product,
+    stockKeepingUnits: product?.stockKeepingUnits.map((sku) => ({
+      ...sku,
+      price: (sku.price as Prisma.Decimal).toNumber(),
+    })),
+  };
+
+  return { props: { product: cleanedProduct } };
 }

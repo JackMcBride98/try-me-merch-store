@@ -60,15 +60,15 @@ export const ProductSizes = ({
             {errors.sizes?.[index]?.price?.message}
           </p>
 
-          <label htmlFor="amount">
-            <p>Amount</p>
+          <label htmlFor="quantity">
+            <p>Quantity</p>
             <input
-              {...register(`sizes.${index}.amount`)}
+              {...register(`sizes.${index}.quantity`)}
               className="flex w-full justify-between space-x-2"
             />
           </label>
           <p className="text-red-500">
-            {errors.sizes?.[index]?.amount?.message}
+            {errors.sizes?.[index]?.quantity?.message}
           </p>
         </div>
       ))}
@@ -77,7 +77,7 @@ export const ProductSizes = ({
         type="button"
         className="rounded-md bg-black p-4 text-white"
         onClick={async () => {
-          append({ size: "", price: 0, amount: 0 });
+          append({ size: "", price: 0, quantity: 0 });
           await trigger("sizes");
         }}
       >

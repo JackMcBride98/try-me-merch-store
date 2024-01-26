@@ -25,13 +25,14 @@ export const productRouter = createTRPCRouter({
       > = {};
 
       for (const size of input.sizes) {
+        console.log(size.price);
         newStripeProductsBySize[size.size] = await stripe.products.create({
           name: input.name + size.size,
           description: input.description,
           images: input.images.map((image) => image.url),
           default_price_data: {
             currency: "gbp",
-            unit_amount: size.price * 100,
+            unit_amount: Math.round(size.price * 10000) / 100,
           },
         });
       }
@@ -44,8 +45,8 @@ export const productRouter = createTRPCRouter({
           stockKeepingUnits: {
             createMany: {
               data: input.sizes.map((size) => ({
-                price: size.price,
-                amount: size.amount,
+                price: Math.round(size.price * 100) / 100,
+                quantity: size.quantity,
                 size: size.size,
                 stripeProductId: newStripeProductsBySize[size.size]!.id,
                 stripePriceId: newStripeProductsBySize[size.size]!

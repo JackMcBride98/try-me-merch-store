@@ -44,7 +44,7 @@ export const Header = ({ dropdownOptions }: HeaderProps) => {
           ref={logoRef}
         />
         <Link href="/basket" className="mr-2 flex space-x-2">
-          {basketQuantity > 0 && <p>{basketQuantity}</p>}
+          {<p>{basketQuantity}</p>}
           <svg
             width="15"
             height="15"

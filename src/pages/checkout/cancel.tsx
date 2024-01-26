@@ -1,9 +1,21 @@
+import BasketContext from "@/components/basketProvider";
 import { Header } from "@/components/header";
+import { env } from "@/env.mjs";
+import { prisma } from "@/server/db";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useContext, useEffect } from "react";
+import Stripe from "stripe";
 
 export default function CheckoutCancelPage() {
+  const [, , clearBasket] = useContext(BasketContext);
+
+  useEffect(() => {
+    clearBasket();
+  }, []);
+
   return (
     <>
       <Head>
@@ -28,8 +40,39 @@ export default function CheckoutCancelPage() {
         }
       />
       <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-4 bg-gradient-to-b from-black to-[#04100C] pb-4 text-white">
-        <p className="mt-[4.5rem]">Stripe order cancelled</p>
+        <p className="mt-[4.5rem] text-4xl">Order Cancelled</p>
+        <p className="mx-4 text-xl">Your order has been cancelled.</p>
+        <Link
+          className="rounded-full bg-[#7DFCB2]/40 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          href="/"
+        >
+          Back to Home
+        </Link>
       </div>
     </>
   );
 }
+
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const checkoutSession = await stripe.checkout.sessions.retrieve(
+    query.session_id as string,
+    { expand: ["line_items"] }
+  );
+
+  const lineItems = checkoutSession.line_items?.data ?? [];
+
+  for (const lineItem of lineItems) {
+    await prisma.productStockKeepingUnit.update({
+      where: { stripeProductId: lineItem.price?.product as string },
+      data: { quantity: { increment: lineItem.quantity ?? 0 } },
+    });
+  }
+
+  return {
+    props: {
+      checkoutSession,
+    },
+  };
+};

@@ -7,7 +7,7 @@ TODO:
 - handle deleting of images in uploadthing storage when finished
 - add validation to prevent size names being the same
 
-Remember to run `npx prisma generate` and `prisma db push` when making changes to the schema.prisma file
+Remember to run `npx prisma generate` and `npx prisma db push` when making changes to the schema.prisma file
 
 # Create T3 App
 

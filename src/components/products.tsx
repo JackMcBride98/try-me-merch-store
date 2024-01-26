@@ -17,7 +17,7 @@ export const newProductFormSchema = z.object({
           .number()
           .multipleOf(0.01, "Maximum 2 decimal places")
           .min(0),
-        amount: z.coerce.number().int("Must be a whole number").min(0),
+        quantity: z.coerce.number().int("Must be a whole number").min(0),
       })
     )
     .min(1, "Must have at least one size"),
@@ -47,15 +47,15 @@ export const Products = () => {
     trigger,
     control,
     handleSubmit,
-    getValues,
+    reset,
     formState: { errors },
   } = useForm<ProductFormFields>({
     resolver: zodResolver(newProductFormSchema),
     defaultValues: {
       sizes: [
-        { size: "S", price: 0, amount: 0 },
-        { size: "M", price: 0, amount: 0 },
-        { size: "L", price: 0, amount: 0 },
+        { size: "S", price: 0, quantity: 0 },
+        { size: "M", price: 0, quantity: 0 },
+        { size: "L", price: 0, quantity: 0 },
       ],
       images: [],
     },
@@ -63,10 +63,9 @@ export const Products = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     await newProduct.mutateAsync(data);
+    reset();
     await products.refetch();
   });
-
-  console.log(getValues());
 
   return (
     <>
@@ -85,8 +84,8 @@ export const Products = () => {
                 {product.stockKeepingUnits.map((sku) => (
                   <div className="flex space-x-2" key={sku.id}>
                     <p>Size: {sku.size}</p>
-                    <p>Price: £{sku.price}</p>
-                    <p>Stock: {sku.amount}</p>
+                    <p>Price: £{sku.price.toString()}</p>
+                    <p>Stock: {sku.quantity}</p>
                   </div>
                 ))}
               </div>

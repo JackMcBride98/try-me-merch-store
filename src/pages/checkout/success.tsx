@@ -1,9 +1,26 @@
 import { Header } from "@/components/header";
+import { env } from "@/env.mjs";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useContext, useEffect } from "react";
+import Stripe from "stripe";
+import BasketContext from "@/components/basketProvider";
 
-export default function CheckoutSuccessPage() {
+export type CheckoutSuccessPageProps = {
+  checkoutSession: Stripe.Checkout.Session;
+};
+
+export default function CheckoutSuccessPage({
+  checkoutSession,
+}: CheckoutSuccessPageProps) {
+  const [, , clearBasket] = useContext(BasketContext);
+
+  useEffect(() => {
+    clearBasket();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <>
       <Head>
@@ -27,9 +44,36 @@ export default function CheckoutSuccessPage() {
           </>
         }
       />
-      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-4 bg-gradient-to-b from-black to-[#04100C] pb-4 text-white">
-        <p className="mt-[4.5rem]">Succcess</p>
+      <div className="max-w-screen bg-animate flex min-h-screen w-full flex-col items-center space-y-8 bg-gradient-to-b from-black to-[#04100C] pb-4 text-white">
+        <p className="mt-[4.5rem] text-4xl">Order Confirmed</p>
+        <p className="mx-4 text-xl">
+          Thanks for your order! A confirmation email will be sent out to{" "}
+          <span className="italic">
+            {checkoutSession.customer_details?.email}
+          </span>
+        </p>
+        <Link
+          className="rounded-full bg-[#7DFCB2]/40 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          href="/"
+        >
+          Back to Home
+        </Link>
       </div>
     </>
   );
 }
+
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const checkoutSession = await stripe.checkout.sessions.retrieve(
+    query.session_id as string,
+    { expand: ["line_items"] }
+  );
+
+  return {
+    props: {
+      checkoutSession,
+    },
+  };
+};

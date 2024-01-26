@@ -123,9 +123,17 @@ export async function getStaticProps() {
     },
   });
 
+  const cleanedProducts = products.map((product) => ({
+    ...product,
+    stockKeepingUnits: product.stockKeepingUnits.map((sku) => ({
+      ...sku,
+      price: (sku.price as Prisma.Decimal).toNumber(),
+    })),
+  }));
+
   return {
     props: {
-      products,
+      products: cleanedProducts,
     },
   };
 }
